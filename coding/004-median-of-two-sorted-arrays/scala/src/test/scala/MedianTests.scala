@@ -25,3 +25,12 @@ class MedianTests extends munit.FunSuite:
 
   test("negative and mixed"):
     assertEquals(med(Array(-5, -3, -1), Array(-2, 0, 2)), -1.5)
+
+  test("both empty throws"):
+    intercept[IllegalArgumentException](med(Array(), Array()))
+
+  test("large values, no overflow"):
+    // Two boundaries each at Int.MaxValue sum past Int; the Long widening keeps
+    // this correct. Drop the widening and JVM Int overflow *silently* wraps.
+    assertEquals(med(Array(Int.MaxValue), Array(Int.MaxValue)), Int.MaxValue.toDouble)
+    assertEquals(med(Array(Int.MinValue), Array(Int.MinValue)), Int.MinValue.toDouble)

@@ -10,6 +10,7 @@ object Median:
   def findMedianSortedArrays(nums1: Array[Int], nums2: Array[Int]): Double =
     val (a, b) = if nums1.length <= nums2.length then (nums1, nums2) else (nums2, nums1)
     val (m, n) = (a.length, b.length)
+    if m + n == 0 then throw IllegalArgumentException("inputs must not both be empty")
     val leftSize = (m + n + 1) / 2
 
     var lo = 0
@@ -30,7 +31,7 @@ object Median:
       else if l1 > r2 then hi = i - 1
       else lo = i + 1
 
-    throw IllegalArgumentException("inputs must be sorted and not both empty")
+    throw IllegalArgumentException("inputs must be sorted")
 
 @main def demo(): Unit =
   val (a, b) = (Array(1, 3, 8), Array(7, 9, 10, 11))

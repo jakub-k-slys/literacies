@@ -14,6 +14,7 @@ pub fn find_median_sorted_arrays(nums1: &[i32], nums2: &[i32]) -> f64 {
         (nums2, nums1)
     };
     let (m, n) = (a.len(), b.len());
+    assert!(m + n > 0, "inputs must not both be empty");
     let left_size = (m + n + 1) / 2;
 
     let (mut lo, mut hi) = (0i64, m as i64);
@@ -39,7 +40,7 @@ pub fn find_median_sorted_arrays(nums1: &[i32], nums2: &[i32]) -> f64 {
             lo = i + 1;
         }
     }
-    panic!("inputs must be sorted and not both empty");
+    panic!("inputs must be sorted");
 }
 
 fn main() {
@@ -77,5 +78,17 @@ mod tests {
     #[test]
     fn negative_and_mixed() {
         assert_eq!(med(&[-5, -3, -1], &[-2, 0, 2]), -1.5);
+    }
+    #[test]
+    #[should_panic(expected = "both be empty")]
+    fn both_empty_panics() {
+        med(&[], &[]);
+    }
+    #[test]
+    fn large_values_no_overflow() {
+        // Two boundaries each at i32::MAX sum past i32; the i64 widening is what
+        // keeps this correct. Drop the widening and this test overflows.
+        assert_eq!(med(&[i32::MAX], &[i32::MAX]), i32::MAX as f64);
+        assert_eq!(med(&[i32::MIN], &[i32::MIN]), i32::MIN as f64);
     }
 }

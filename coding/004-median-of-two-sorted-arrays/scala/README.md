@@ -17,7 +17,7 @@ average them is lifted to `Long` first. The `+/- inf` sentinels become
 ## Run
 
 ```
-sbt test       # 6 munit tests
+sbt test       # 8 munit tests
 sbt run        # tiny demo
 ```
 

@@ -7,13 +7,12 @@ thinking of it as a cut you place: pick how many elements come from the smaller
 array's left side, derive the rest, and binary-search that cut until the left
 half is entirely <= the right half.
 """
-from typing import List
-
-
-def find_median_sorted_arrays(nums1: List[int], nums2: List[int]) -> float:
+def find_median_sorted_arrays(nums1: list[int], nums2: list[int]) -> float:
     # Always binary-search the smaller array: O(log min(m, n)).
     a, b = (nums1, nums2) if len(nums1) <= len(nums2) else (nums2, nums1)
     m, n = len(a), len(b)
+    if m + n == 0:
+        raise ValueError("inputs must not both be empty")
     left_size = (m + n + 1) // 2  # left half gets the extra element when total is odd
 
     lo, hi = 0, m
@@ -36,7 +35,7 @@ def find_median_sorted_arrays(nums1: List[int], nums2: List[int]) -> float:
         else:
             lo = i + 1                        # took too few from a
 
-    raise ValueError("inputs must be sorted and not both empty")
+    raise ValueError("inputs must be sorted")
 
 
 def main() -> None:

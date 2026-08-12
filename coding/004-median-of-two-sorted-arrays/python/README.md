@@ -16,7 +16,7 @@ special case.
 
 ```
 uv sync                # install deps into .venv
-uv run pytest          # 6 tests
+uv run pytest          # 8 tests
 uv run main.py         # tiny demo
 ```
 

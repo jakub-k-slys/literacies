@@ -2,6 +2,8 @@
 
 Run: uv run pytest
 """
+import pytest
+
 from main import find_median_sorted_arrays as med
 
 
@@ -11,6 +13,7 @@ def test_odd_total():
 
 def test_even_total():
     assert med([1, 2], [3, 4]) == 2.5
+    assert med([1], [2]) == 1.5  # smallest even total
 
 
 def test_one_array_empty():
@@ -29,3 +32,17 @@ def test_duplicates_and_equal_boundaries():
 
 def test_negative_and_mixed():
     assert med([-5, -3, -1], [-2, 0, 2]) == -1.5
+
+
+def test_both_empty_raises():
+    with pytest.raises(ValueError):
+        med([], [])
+
+
+def test_large_values_no_overflow():
+    # Two boundary values each up to int max sum past 32-bit range; Python's
+    # arbitrary-precision ints handle it, but this is the case that forces the
+    # i64 / Long widening in the Rust and Scala ports.
+    imax, imin = 2147483647, -2147483648
+    assert med([imax], [imax]) == float(imax)
+    assert med([imin], [imin]) == float(imin)

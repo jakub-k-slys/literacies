@@ -17,7 +17,7 @@ them, so the boundaries are lifted to `i64` first. The `+/- inf` sentinels becom
 ## Run
 
 ```
-cargo test        # 6 tests
+cargo test        # 8 tests
 cargo run         # tiny demo
 ```
 
