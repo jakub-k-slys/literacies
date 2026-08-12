@@ -1,6 +1,7 @@
 [package]
-name = "rust"
+name = "median-of-two-sorted-arrays"
 version = "0.1.0"
 edition = "2024"
+description = "Median of two sorted arrays in O(log min(m, n)) — Coding Literacy 004"
 
 [dependencies]

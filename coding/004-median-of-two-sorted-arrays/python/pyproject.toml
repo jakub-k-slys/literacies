@@ -1,7 +1,7 @@
 [project]
 name = "004-median-of-two-sorted-arrays"
 version = "0.1.0"
-description = "Add your description here"
+description = "Median of two sorted arrays in O(log min(m, n)) — Coding Literacy 004"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
