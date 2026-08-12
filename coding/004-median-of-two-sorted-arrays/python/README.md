@@ -15,15 +15,9 @@ special case.
 ## Run
 
 ```
+uv sync                # install deps into .venv
 uv run pytest          # 6 tests
 uv run main.py         # tiny demo
-```
-
-or without uv:
-
-```
-python -m pytest
-python main.py
 ```
 
 ## Files

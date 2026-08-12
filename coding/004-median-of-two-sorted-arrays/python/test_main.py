@@ -1,6 +1,6 @@
 """Tests for find_median_sorted_arrays.
 
-Run: uv run pytest    (or: python -m pytest, or: python test_main.py)
+Run: uv run pytest
 """
 from main import find_median_sorted_arrays as med
 
@@ -29,11 +29,3 @@ def test_duplicates_and_equal_boundaries():
 
 def test_negative_and_mixed():
     assert med([-5, -3, -1], [-2, 0, 2]) == -1.5
-
-
-if __name__ == "__main__":
-    for _name, _fn in sorted(globals().items()):
-        if _name.startswith("test_") and callable(_fn):
-            _fn()
-            print(f"ok  {_name}")
-    print("all passed")

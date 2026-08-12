@@ -32,7 +32,7 @@ the paid **Language Literacy** deep dive on slys.DEV.
 ## Run everything
 
 ```
-cd coding/<NNN-slug>/python && uv run pytest
+cd coding/<NNN-slug>/python && uv sync && uv run pytest
 cd coding/<NNN-slug>/rust   && cargo test
 cd coding/<NNN-slug>/scala  && sbt test
 ```
