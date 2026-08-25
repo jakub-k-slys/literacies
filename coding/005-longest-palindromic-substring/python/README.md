@@ -17,19 +17,27 @@ character. So the expansion carries `(best_start, best_len)` as plain integers
 and slices exactly once, on return; the helper returns bounds rather than a
 substring for the same reason.
 
-Python indexes **code points**, so the two-pointer walk is correct on non-ASCII
-input with no extra work. That is not free elsewhere: see `../rust` (byte
-offsets) and `../scala` (UTF-16 code units).
+Python indexes **code points**, so the two-pointer walk needs no extra work at
+that level. That much is not free elsewhere: see `../rust` (byte offsets) and
+`../scala` (UTF-16 code units).
+
+Code points are not the last word, though, and the sibling projects do not fix
+this either. A grapheme cluster is the unit a human would call a character, and
+none of the three reaches for it: on `"éé"`, two accented e's written
+decomposed, the longest palindrome by code points is three long and tears a
+combining mark off its base character. `test_code_points_are_still_not_grapheme_clusters`
+pins that as a stated limit rather than an accident. Bytes, code units, code
+points, grapheme clusters: four units, and the language picks one for you.
 
 ## Run
 
 ```
 uv sync                # install deps into .venv
-uv run pytest          # 10 tests
+uv run pytest          # 12 tests
 uv run main.py         # tiny demo
 ```
 
 ## Files
 
 - `main.py` — `expand(s, l, r) -> (int, int)` and `longest_palindrome(s) -> str`
-- `test_main.py` — statement examples, empty, gap centers, edge windows, non-ASCII, randomized cross-check against brute force
+- `test_main.py` — statement examples, empty, gap centers, edge windows, the `expand` bounds contract, non-ASCII, grapheme-cluster limit, randomized cross-check against brute force

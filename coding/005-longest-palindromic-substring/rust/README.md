@@ -1,6 +1,7 @@
 # 005 · Longest Palindromic Substring — Rust
 
-`O(n^2)` expansion around centers, returning a **borrowed** `&str`.
+`O(n^2)` expansion around centers, allocating nothing and returning a
+**borrowed** `&str`.
 
 ## Idea
 
@@ -18,21 +19,36 @@ on `"aóòa"` a byte-level walk picks bytes `1..4`, where slicing panics with
 `byte index 4 is not a char boundary`. Wrong answer and a crash on the same
 input.
 
-Two fixes exist and they cost different things. Collecting a `Vec<char>` is
-correct but gives the borrow up, because `Vec<char>` is an owned copy at four
-bytes per character. Walking a `char_indices` table, which is what this project
-does, **keeps the borrow** and pays for one index walk instead: the return type
-is `&str`, pointing into the caller's own buffer, and no `String` is ever built.
-`the_result_borrows_the_input_and_never_copies` asserts exactly that, by
-comparing pointers.
+The usual fix, collecting a `Vec<char>`, is correct and gives the borrow up. Not
+because collecting is inherently expensive, but because a `Vec<char>` has
+**thrown the byte offsets away**: it can tell you the answer runs from character
+3 to character 9, and it cannot tell you where that is in the original buffer, so
+the answer has to be rebuilt as an owned `String`.
+
+This project keeps the offsets instead. `char_indices` yields byte offsets that
+are already character boundaries, and `chars().next_back()` / `chars().next()`
+step one character out from a boundary in constant time, because UTF-8 is
+self-synchronizing. So the walk carries byte offsets throughout, **allocates
+nothing at all**, and ends with one `&s[lo..hi]` pointing into the caller's
+string. `the_result_borrows_the_input_and_never_copies` asserts that by comparing
+pointers, including for the empty answer.
+
+One consequence worth stating, since the whole project is about picking a unit
+on purpose: the expansion tracks its length **in characters**, not in bytes.
+Ranking candidates by byte length would put a single four-byte emoji above a
+genuine two-character palindrome. The randomized cross-check caught exactly that.
+
+Characters are still not the last word. Code points are not grapheme clusters, so
+a combining mark can be torn off its base character. `code_points_are_still_not_grapheme_clusters`
+pins that limit rather than leaving it to chance; all three siblings share it.
 
 ## Run
 
 ```
-cargo test        # 12 tests
+cargo test        # 14 tests
 cargo run         # tiny demo
 ```
 
 ## Files
 
-- `src/main.rs` — `longest_palindrome(&str) -> &str`, an `expand` helper returning bounds, and `#[cfg(test)]`
+- `src/main.rs` — `longest_palindrome(&str) -> &str`, an `expand` helper returning byte bounds plus a character count, and `#[cfg(test)]`

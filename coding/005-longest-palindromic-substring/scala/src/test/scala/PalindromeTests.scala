@@ -52,6 +52,18 @@ class PalindromeTests extends munit.FunSuite:
     assertEquals(got.codePointCount(0, got.length), 1)
     assert(!Character.isHighSurrogate(got.charAt(got.length - 1)))
 
+  test("code points are still not grapheme clusters"):
+    // The limit all three siblings share, pinned rather than left to chance. An
+    // accented e written decomposed is e + U+0301, so two of them are the four
+    // code points e U+0301 e U+0301. By code points the longest palindrome is
+    // three long and tears a combining mark off its base character. Two windows
+    // tie at three, so pin the length, not which tie wins.
+    val acute = 0x0301
+    val decomposed = String(Array('e'.toInt, acute, 'e'.toInt, acute), 0, 4)
+    val got = lps(decomposed)
+    assertEquals(got.codePointCount(0, got.length), 3)
+    assert(got.codePointAt(0) == acute || got.codePointBefore(got.length) != acute)
+
   test("agrees with brute force"):
     // O(n^3) oracle: every window, reversed and compared. StringOps.reverse
     // delegates to StringBuilder.reverse, which the JVM documents as keeping
@@ -66,10 +78,15 @@ class PalindromeTests extends munit.FunSuite:
         if w == w.reverse then best = math.max(best, w.length)
       best
 
+    // The alphabet reaches past ASCII but stays inside the BMP on purpose: the
+    // oracle indexes UTF-16 units, so a non-BMP character would let substring
+    // split a surrogate pair and the oracle itself would stop being sound. The
+    // non-BMP cases have their own tests above.
+    val alphabet = "abóò"
     val rng = scala.util.Random(20260825)
-    for _ <- 0 until 500 do
+    for _ <- 0 until 2000 do
       val n = rng.nextInt(15)
-      val s = List.fill(n)("abc".charAt(rng.nextInt(3))).mkString
+      val s = List.fill(n)(alphabet.charAt(rng.nextInt(alphabet.length))).mkString
       val got = lps(s)
       assertEquals(got.length, brute(s), s"input '$s'")
       assertEquals(got, got.reverse, s"input '$s'")

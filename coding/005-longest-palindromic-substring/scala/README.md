@@ -19,13 +19,18 @@ Rust.
 
 So this walks an array of **code points**, which on the JVM is an owned copy
 either way. That is the honest summary of the trade across the three siblings:
-Python pays a copy per slice, Rust can keep a borrow, and here you pay one copy
-up front to get correctness.
+Python pays a copy per slice, Rust can keep a borrow and allocate nothing, and
+here you pay one copy up front to get correctness.
+
+Code points are not the last word. A grapheme cluster is the unit a human would
+call a character, and none of the three siblings reaches for it, so a combining
+mark can be torn off its base character. The `code points are still not grapheme
+clusters` test pins that limit rather than leaving it to chance.
 
 ## Run
 
 ```
-sbt test       # 11 munit tests
+sbt test       # 12 munit tests
 sbt run        # tiny demo
 ```
 

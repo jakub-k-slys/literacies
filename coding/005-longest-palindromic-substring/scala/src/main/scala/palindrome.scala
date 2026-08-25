@@ -24,9 +24,9 @@ object Palindrome:
     * loop exits, so the winning window is positions `l+1` until `r-1`, of
     * length `r - l - 1`.
     */
-  private def expand(cps: Array[Int], start: Int, end: Int): (Int, Int) =
-    var l = start
-    var r = end
+  private def expand(cps: Array[Int], l0: Int, r0: Int): (Int, Int) =
+    var l = l0
+    var r = r0
     while l >= 0 && r < cps.length && cps(l) == cps(r) do
       l -= 1
       r += 1
@@ -37,14 +37,19 @@ object Palindrome:
 
     var bestStart = 0
     var bestLen = 0
+
+    // Nothing is allocated per center: the two candidates are checked in place.
+    inline def consider(bounds: (Int, Int)): Unit =
+      val (l, r) = bounds
+      val len = r - l - 1
+      if len > bestLen then
+        bestStart = l + 1
+        bestLen = len
+
     var i = 0
     while i < cps.length do
-      val candidates = List(expand(cps, i, i), expand(cps, i, i + 1)) // odd center, then gap center
-      for (l, r) <- candidates do
-        val len = r - l - 1
-        if len > bestLen then
-          bestStart = l + 1
-          bestLen = len
+      consider(expand(cps, i, i))     // odd center
+      consider(expand(cps, i, i + 1)) // gap center
       i += 1
 
     new String(cps, bestStart, bestLen)
