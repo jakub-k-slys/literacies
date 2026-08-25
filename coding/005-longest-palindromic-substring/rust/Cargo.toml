@@ -1,0 +1,7 @@
+[package]
+name = "longest-palindromic-substring"
+version = "0.1.0"
+edition = "2024"
+description = "Longest palindromic substring by expansion around centers, O(n^2) — Coding Literacy 005"
+
+[dependencies]

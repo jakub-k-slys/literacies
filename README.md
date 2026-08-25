@@ -42,6 +42,7 @@ cd coding/<NNN-slug>/scala  && sbt test
 | # | Problem | Idea | Post |
 |---|---------|------|------|
 | 004 | [Median of Two Sorted Arrays](coding/004-median-of-two-sorted-arrays/) | place a boundary, don't walk the data — `O(log min(m, n))` | _(link once published)_ |
+| 005 | [Longest Palindromic Substring](coding/005-longest-palindromic-substring/) | anchor and extend: grow outward from each of the `2n-1` centers — `O(n^2)` | _(link once published)_ |
 
 ## License
 

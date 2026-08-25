@@ -1,0 +1,9 @@
+[project]
+name = "005-longest-palindromic-substring"
+version = "0.1.0"
+description = "Longest palindromic substring by expansion around centers, O(n^2) — Coding Literacy 005"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=9.1.1",
+]
