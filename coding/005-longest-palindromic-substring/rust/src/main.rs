@@ -52,8 +52,9 @@ pub fn longest_palindrome(s: &str) -> &str {
     for (i, c) in s.char_indices() {
         let after = i + c.len_utf8();
         // The odd center is the character itself, one character wide; the gap
-        // center is the empty window just after it. Together, over every i, that
-        // is the 2n-1 anchors.
+        // center is the empty window just after it. That is 2n windows over the
+        // whole loop, of which 2n-1 are real anchors: the gap after the final
+        // character can never expand.
         for (lo, hi, n) in [expand(s, i, after, 1), expand(s, after, after, 0)] {
             if n > best_n {
                 (best_lo, best_hi, best_n) = (lo, hi, n);
@@ -163,13 +164,14 @@ mod tests {
         // longest palindrome is U+0301 e U+0301, which splits a combining mark
         // away from its base. Grapheme clusters are the next unit up, and none of
         // the three implementations reaches for them.
-        // Two windows tie at three code points here, so pin the length rather
-        // than which tie wins; the Python and Scala siblings assert the same.
+        // Two windows tie at three code points here, so both are pinned; the
+        // Python and Scala siblings assert the same pair. Either way a combining
+        // mark has been torn off its base character, which any three-code-point
+        // window of this string must do.
         let decomposed = "e\u{0301}e\u{0301}";
         let got = lps(decomposed);
         assert_eq!(got.chars().count(), 3);
-        // Whichever tie wins, it has torn a combining mark off its base character.
-        assert!(got.starts_with('\u{0301}') || !got.ends_with('\u{0301}'));
+        assert!(matches!(got, "e\u{0301}e" | "\u{0301}e\u{0301}"), "unexpected tie: {got:?}");
     }
 
     #[test]

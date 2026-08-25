@@ -21,9 +21,10 @@ input.
 
 The usual fix, collecting a `Vec<char>`, is correct and gives the borrow up. Not
 because collecting is inherently expensive, but because a `Vec<char>` has
-**thrown the byte offsets away**: it can tell you the answer runs from character
-3 to character 9, and it cannot tell you where that is in the original buffer, so
-the answer has to be rebuilt as an owned `String`.
+**not recorded the byte offsets**: it can tell you the answer runs from character
+3 to character 9, and recovering where that is in the original buffer costs
+another pass summing `len_utf8()`, so in practice the answer gets rebuilt as an
+owned `String`.
 
 This project keeps the offsets instead. `char_indices` yields byte offsets that
 are already character boundaries, and `chars().next_back()` / `chars().next()`

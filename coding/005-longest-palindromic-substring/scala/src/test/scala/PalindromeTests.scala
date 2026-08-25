@@ -57,37 +57,41 @@ class PalindromeTests extends munit.FunSuite:
     // accented e written decomposed is e + U+0301, so two of them are the four
     // code points e U+0301 e U+0301. By code points the longest palindrome is
     // three long and tears a combining mark off its base character. Two windows
-    // tie at three, so pin the length, not which tie wins.
+    // tie at three, so both are pinned below.
     val acute = 0x0301
     val decomposed = String(Array('e'.toInt, acute, 'e'.toInt, acute), 0, 4)
     val got = lps(decomposed)
     assertEquals(got.codePointCount(0, got.length), 3)
-    assert(got.codePointAt(0) == acute || got.codePointBefore(got.length) != acute)
+    // Pin the two ties explicitly. Either way a combining mark has been torn off
+    // its base character, which a 3-code-point window of this string must do.
+    val tieA = String(Array('e'.toInt, acute, 'e'.toInt), 0, 3)
+    val tieB = String(Array(acute, 'e'.toInt, acute), 0, 3)
+    assert(got == tieA || got == tieB, s"unexpected tie: ${got.codePoints().toArray.mkString(",")}")
 
   test("agrees with brute force"):
-    // O(n^3) oracle: every window, reversed and compared. StringOps.reverse
-    // delegates to StringBuilder.reverse, which the JVM documents as keeping
-    // surrogate pairs intact, so it is a safe oracle here.
-    def brute(s: String): Int =
+    // The oracle walks CODE POINTS, not UTF-16 units. Indexing the string with
+    // substring would let a window split a surrogate pair, and the oracle itself
+    // would stop being sound on exactly the input this project is about.
+    def brute(cps: Array[Int]): Int =
       var best = 0
       for
-        i <- 0 to s.length
-        j <- i + 1 to s.length
+        i <- 0 to cps.length
+        j <- i + 1 to cps.length
       do
-        val w = s.substring(i, j)
-        if w == w.reverse then best = math.max(best, w.length)
+        val w = cps.slice(i, j)
+        if w.sameElements(w.reverse) then best = math.max(best, w.length)
       best
 
-    // The alphabet reaches past ASCII but stays inside the BMP on purpose: the
-    // oracle indexes UTF-16 units, so a non-BMP character would let substring
-    // split a surrogate pair and the oracle itself would stop being sound. The
-    // non-BMP cases have their own tests above.
-    val alphabet = "abóò"
+    // Non-BMP characters included on purpose: a surrogate pair is the whole
+    // reason this implementation walks code points at all.
+    val alphabet = Array('a'.toInt, 'b'.toInt, 0x00F3, 0x4E2D, 0x1F600, 0x1F601)
     val rng = scala.util.Random(20260825)
     for _ <- 0 until 2000 do
       val n = rng.nextInt(15)
-      val s = List.fill(n)(alphabet.charAt(rng.nextInt(alphabet.length))).mkString
+      val cps = Array.fill(n)(alphabet(rng.nextInt(alphabet.length)))
+      val s = String(cps, 0, cps.length)
       val got = lps(s)
-      assertEquals(got.length, brute(s), s"input '$s'")
-      assertEquals(got, got.reverse, s"input '$s'")
-      assert(s.contains(got), s"input '$s'")
+      val gotCps = got.codePoints().toArray
+      assertEquals(gotCps.length, brute(cps), s"input ${cps.mkString(",")}")
+      assert(gotCps.sameElements(gotCps.reverse), s"input ${cps.mkString(",")}")
+      assert(s.contains(got), s"input ${cps.mkString(",")}")

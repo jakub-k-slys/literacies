@@ -67,11 +67,13 @@ def test_code_points_are_still_not_grapheme_clusters():
     # code points e U+0301 e U+0301. By code points the longest palindrome is
     # three long and tears a combining mark off its base character. Grapheme
     # clusters are the next unit up, and none of the three siblings reaches for
-    # them. Two windows tie at three, so pin the length, not which tie wins.
+    # them. Two windows tie at three, so both are pinned below; either way a
+    # combining mark has been torn off its base character, which any three-code-
+    # point window of this string must do.
     decomposed = "e\u0301e\u0301"
     got = lps(decomposed)
     assert len(got) == 3
-    assert got.startswith("\u0301") or not got.endswith("\u0301")
+    assert got in ("e\u0301e", "\u0301e\u0301"), f"unexpected tie: {got!r}"
 
 
 def test_agrees_with_brute_force():

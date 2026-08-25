@@ -38,7 +38,10 @@ object Palindrome:
     var bestStart = 0
     var bestLen = 0
 
-    // Nothing is allocated per center: the two candidates are checked in place.
+    // The two candidates are checked without building a collection per center.
+    // expand still returns a Tuple2 of boxed Ints, so the bytecode does allocate;
+    // C2 scalar-replaces those once the method is hot. The List this replaced was
+    // a different matter, since a cons cell per center survives escape analysis.
     inline def consider(bounds: (Int, Int)): Unit =
       val (l, r) = bounds
       val len = r - l - 1
