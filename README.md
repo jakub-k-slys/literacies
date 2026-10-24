@@ -43,6 +43,7 @@ cd coding/<NNN-slug>/scala  && sbt test
 |---|---------|------|------|
 | 004 | [Median of Two Sorted Arrays](coding/004-median-of-two-sorted-arrays/) | place a boundary, don't walk the data — `O(log min(m, n))` | [👉 link 👈](https://iam.slys.dev/p/median-of-two-sorted-arrays-the-binary) |
 | 005 | [Longest Palindromic Substring](coding/005-longest-palindromic-substring/) | anchor and extend: grow outward from each of the `2n-1` centers — `O(n^2)` | _(link once published)_ |
+| 007 | [Reverse Integer](coding/007-reverse-integer/) | check the boundary before the operation: refuse the push that would leave 32 bits — `O(digits)` | _(link once published)_ |
 
 ## License
 

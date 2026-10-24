@@ -1,0 +1,9 @@
+[project]
+name = "007-reverse-integer"
+version = "0.1.0"
+description = "Reverse Integer with the 32-bit boundary checked before the push — Coding Literacy 007"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=9.1.1",
+]

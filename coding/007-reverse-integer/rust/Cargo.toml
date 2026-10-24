@@ -1,0 +1,7 @@
+[package]
+name = "reverse-integer"
+version = "0.1.0"
+edition = "2024"
+description = "Reverse Integer with the 32-bit boundary checked before the push — Coding Literacy 007"
+
+[dependencies]
