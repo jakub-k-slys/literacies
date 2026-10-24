@@ -18,8 +18,10 @@ after the fact.
 
 Python's // and % floor toward negative infinity (-123 // 10 == -13,
 -123 % 10 == 7, -1 // 10 == -1), so the loop runs on abs(x) and reapplies the
-sign at the end. abs(-2**31) is 2**31, the one place this leans on Python's
-width; the fixed-width siblings keep the sign in the digits instead.
+sign at the end. abs(-2**31) is 2**31, and so is limit for a negative x: that
+one value is where this leans on Python's width (it fits an unsigned 32-bit
+magnitude, and rev never exceeds 2147483641); the fixed-width siblings keep
+the sign in the digits instead.
 """
 
 INT_MAX = 2**31 - 1  # 2147483647
