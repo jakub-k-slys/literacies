@@ -92,7 +92,7 @@ mod tests {
         assert_eq!(my_atoi("1337c0d3"), 1337);
         assert_eq!(my_atoi("0-1"), 0);
         assert_eq!(my_atoi("words and 987"), 0);
-        assert_eq!(my_atoi("-91283472332"), i32::MIN); // constructed: below i32::MIN, clamps
+        assert_eq!(my_atoi("-91283472332"), i32::MIN); // earlier statement example: below i32::MIN, clamps
     }
 
     #[test]

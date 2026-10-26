@@ -26,7 +26,7 @@ def test_statement_examples():
         assert f("1337c0d3") == 1337
         assert f("0-1") == 0
         assert f("words and 987") == 0
-        assert f("-91283472332") == INT_MIN  # constructed: below INT_MIN, clamps
+        assert f("-91283472332") == INT_MIN  # earlier statement example: below INT_MIN, clamps
 
 
 def test_earlier_statement_examples():

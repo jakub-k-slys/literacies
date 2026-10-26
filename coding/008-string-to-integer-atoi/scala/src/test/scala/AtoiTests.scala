@@ -15,7 +15,7 @@ class AtoiTests extends munit.FunSuite:
     assertEquals(myAtoi("1337c0d3"), 1337)
     assertEquals(myAtoi("0-1"), 0)
     assertEquals(myAtoi("words and 987"), 0)
-    assertEquals(myAtoi("-91283472332"), Int.MinValue) // constructed: below Int.MinValue, clamps
+    assertEquals(myAtoi("-91283472332"), Int.MinValue) // earlier statement example: below Int.MinValue, clamps
 
   test("earlier statement examples"):
     assertEquals(myAtoi("   -42"), -42)
