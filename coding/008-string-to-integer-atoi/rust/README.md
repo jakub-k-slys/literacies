@@ -49,8 +49,8 @@ unlike Python's `int()` or the JVM's parser it rejects `"٤٢"`.
 ## Run
 
 ```
-cargo test             # 12 tests, dev profile
-cargo test --release   # the same 12, release profile
+cargo test             # 13 tests, dev profile
+cargo test --release   # the same 13, release profile
 cargo run              # tiny demo
 ```
 

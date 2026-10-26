@@ -88,10 +88,17 @@ mod tests {
     #[test]
     fn statement_examples() {
         assert_eq!(my_atoi("42"), 42);
+        assert_eq!(my_atoi(" -042"), -42);
+        assert_eq!(my_atoi("1337c0d3"), 1337);
+        assert_eq!(my_atoi("0-1"), 0);
+        assert_eq!(my_atoi("words and 987"), 0);
+        assert_eq!(my_atoi("-91283472332"), i32::MIN); // constructed: below i32::MIN, clamps
+    }
+
+    #[test]
+    fn earlier_statement_examples() {
         assert_eq!(my_atoi("   -42"), -42);
         assert_eq!(my_atoi("4193 with words"), 4193);
-        assert_eq!(my_atoi("words and 987"), 0);
-        assert_eq!(my_atoi("-91283472332"), i32::MIN);
         assert_eq!(my_atoi("0"), 0);
     }
 
@@ -145,6 +152,10 @@ mod tests {
 
     #[test]
     fn the_prefix_rule() {
+        assert_eq!(parse_int32_prefix("1337c0d3"), Ok(1337));
+        assert_eq!(parse_int32_prefix("0-1"), Ok(0));
+        assert_eq!(parse_int32_prefix(" -042"), Ok(-42));
+        assert_eq!(parse_int32_prefix("30s"), Ok(30));
         assert_eq!(my_atoi(" +0 123"), 0);
         assert_eq!(parse_int32_prefix(" +0 123"), Ok(0));
         assert_eq!(my_atoi("30s"), 30); // the unit disappears without a word
@@ -180,6 +191,7 @@ mod tests {
     fn std_parse_says_no_and_says_why() {
         let kind = |s: &str| *s.parse::<i32>().unwrap_err().kind();
         // The whole string or nothing: no prefix rule, no space skipping.
+        assert_eq!(kind("1337c0d3"), IntErrorKind::InvalidDigit);
         assert_eq!(kind("4193 with words"), IntErrorKind::InvalidDigit);
         assert_eq!(kind(" 42"), IntErrorKind::InvalidDigit);
         assert_eq!(kind("+"), IntErrorKind::InvalidDigit);

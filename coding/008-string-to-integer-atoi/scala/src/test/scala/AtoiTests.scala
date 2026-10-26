@@ -11,10 +11,15 @@ class AtoiTests extends munit.FunSuite:
 
   test("statement examples"):
     assertEquals(myAtoi("42"), 42)
+    assertEquals(myAtoi(" -042"), -42)
+    assertEquals(myAtoi("1337c0d3"), 1337)
+    assertEquals(myAtoi("0-1"), 0)
+    assertEquals(myAtoi("words and 987"), 0)
+    assertEquals(myAtoi("-91283472332"), Int.MinValue) // constructed: below Int.MinValue, clamps
+
+  test("earlier statement examples"):
     assertEquals(myAtoi("   -42"), -42)
     assertEquals(myAtoi("4193 with words"), 4193)
-    assertEquals(myAtoi("words and 987"), 0)
-    assertEquals(myAtoi("-91283472332"), Int.MinValue)
     assertEquals(myAtoi("0"), 0)
 
   test("zero and no digits are one answer from atoi"):
@@ -42,6 +47,10 @@ class AtoiTests extends munit.FunSuite:
     assertEquals(parseInt32Prefix("-2147483649"), OutOfRange(negative = true))
 
   test("the prefix rule"):
+    assertEquals(parseInt32Prefix("1337c0d3"), Parsed(1337))
+    assertEquals(parseInt32Prefix("0-1"), Parsed(0))
+    assertEquals(parseInt32Prefix(" -042"), Parsed(-42))
+    assertEquals(parseInt32Prefix("30s"), Parsed(30))
     assertEquals(myAtoi(" +0 123"), 0)
     assertEquals(parseInt32Prefix(" +0 123"), Parsed(0))
     assertEquals(myAtoi("30s"), 30) // the unit disappears without a word
@@ -68,8 +77,9 @@ class AtoiTests extends munit.FunSuite:
 
   test("the standard parsers say no, and only Java's says why"):
     // The whole string or nothing: no prefix rule, no space skipping.
-    for s <- List("4193 with words", " 42", "+", "", "99999999999") do
+    for s <- List("1337c0d3", "4193 with words", " 42", "+", "", "99999999999") do
       assertEquals(s.toIntOption, None, s"input '$s'")
+    intercept[NumberFormatException](Integer.parseInt("1337c0d3"))
     // Integer.parseInt says why, in the exception's message text.
     val e = intercept[NumberFormatException](Integer.parseInt("99999999999"))
     assert(e.getMessage.contains("99999999999"))

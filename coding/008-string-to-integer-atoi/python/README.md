@@ -47,7 +47,7 @@ keep the sign in the digits instead.
 
 ```
 uv sync                # install deps into .venv
-uv run pytest          # 13 tests
+uv run pytest          # 14 tests
 uv run main.py         # tiny demo
 ```
 

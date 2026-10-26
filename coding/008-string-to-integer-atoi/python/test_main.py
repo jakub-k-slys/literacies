@@ -22,10 +22,17 @@ NBSP = "\u00a0"  # a non-breaking space, kept as an escape on purpose
 def test_statement_examples():
     for f in (my_atoi, my_atoi_naive):
         assert f("42") == 42
+        assert f(" -042") == -42
+        assert f("1337c0d3") == 1337
+        assert f("0-1") == 0
+        assert f("words and 987") == 0
+        assert f("-91283472332") == INT_MIN  # constructed: below INT_MIN, clamps
+
+
+def test_earlier_statement_examples():
+    for f in (my_atoi, my_atoi_naive):
         assert f("   -42") == -42
         assert f("4193 with words") == 4193
-        assert f("words and 987") == 0
-        assert f("-91283472332") == INT_MIN
         assert f("0") == 0
 
 
@@ -73,6 +80,10 @@ def test_the_tie_break_fires():
 
 
 def test_the_prefix_rule():
+    assert parse_int32_prefix("1337c0d3") == Parsed(1337)
+    assert parse_int32_prefix("0-1") == Parsed(0)
+    assert parse_int32_prefix(" -042") == Parsed(-42)
+    assert parse_int32_prefix("30s") == Parsed(30)
     assert my_atoi(" +0 123") == 0
     assert parse_int32_prefix(" +0 123") == Parsed(0)
     assert my_atoi("30s") == 30  # the unit disappears without a word
@@ -111,6 +122,8 @@ def test_the_naive_loop_breaks_its_own_never_fails_contract():
 
 def test_python_int_is_strict_and_unicode_aware():
     # The standard parser reads the whole string or refuses, on a separate channel.
+    with pytest.raises(ValueError):
+        int("1337c0d3")
     with pytest.raises(ValueError):
         int("4193 with words")
     with pytest.raises(ValueError):
