@@ -1,0 +1,9 @@
+[project]
+name = "008-string-to-integer-atoi"
+version = "0.1.0"
+description = "String to Integer (atoi) as a parser that can say no — Coding Literacy 008"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=9.1.1",
+]

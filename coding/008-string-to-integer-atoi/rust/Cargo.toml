@@ -1,0 +1,7 @@
+[package]
+name = "string-to-integer-atoi"
+version = "0.1.0"
+edition = "2024"
+description = "String to Integer (atoi) as a parser that can say no — Coding Literacy 008"
+
+[dependencies]
